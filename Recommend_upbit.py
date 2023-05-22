@@ -81,7 +81,7 @@ while True:
                 if target_price < current_price and ma15 < current_price:
                     print(f"변동성 돌파 전략 조건 충족! 종목 추천: {ticker}")
 
-        time.sleep(1)
+        time.sleep(3)
     except Exception as e:
         print(e)
-        time.sleep(1)
+        time.sleep(3)
