@@ -79,7 +79,8 @@ while True:
                 ma15 = get_ma15(ticker)
                 current_price = get_current_price(ticker)
                 if target_price < current_price and ma15 < current_price:
-                    print(f"변동성 돌파 전략 조건 충족! 종목 추천: {ticker}")
+                    current_time = now.strftime("%m-%d %H:%M:%S")
+                    print(f"({current_time}) 변동성 돌파 전략 조건 충족! 종목 추천: {ticker} ") 
 
         time.sleep(3)
     except Exception as e:
