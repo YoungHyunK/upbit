@@ -62,7 +62,8 @@ def get_top_tickers():
 
     return top_15_tickers
 
-log_file=
+log_file="log.txt"
+sys.stdout=open(log_file,'a',buffering=1)
 
 print("추천 시작")
 
