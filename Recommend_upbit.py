@@ -2,6 +2,7 @@ import time
 import pyupbit
 import datetime
 import numpy as np
+import sys
 
 def get_ror(ticker, k=0.5, count=30):
     df = pyupbit.get_ohlcv(ticker, count=count)
@@ -61,6 +62,8 @@ def get_top_tickers():
 
     return top_15_tickers
 
+log_file="log2.txt"
+sys.stdout=open(log_file,'a',buffering=1)
 
 print("추천 시작")
 
@@ -82,7 +85,7 @@ while True:
                     current_time = now.strftime("%m-%d %H:%M:%S")
                     print(f"({current_time}) 변동성 돌파 전략 조건 충족! 종목 추천: {ticker} ") 
 
-        time.sleep(3)
+        time.sleep(11)
     except Exception as e:
         print(e)
-        time.sleep(3)
+        time.sleep(1)
