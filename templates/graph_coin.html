@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ coin_name }} 그래프</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>{{ coin_name }} 그래프</h1>
+    <canvas id="coinChart"></canvas>
+    <script>
+        const coinName = "{{ coin_name }}";
+        const coinDataUrl = "/get_data_json?coinName=" + encodeURIComponent(coinName);
+        fetch(coinDataUrl)
+        .then(response => response.json())
+        .then(data => {
+            const coinData = data.find(d => d.coin_name === coinName).data;
+            const ctx = document.getElementById('coinChart').getContext('2d');
+
+            // 데이터 배열
+            const priceData = coinData.map(d => d.price);
+            const volumeData = coinData.map(d => d.volume);
+            const labels = coinData.map(d => d.timestamp);
+
+            // 차트 생성
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Price',
+                            data: priceData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            yAxisID: 'y1',
+                        },
+                        {
+                            label: 'Volume',
+                            data: volumeData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 2,
+                            yAxisID: 'y2',
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y1: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                        },
+                        y2: {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true,
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
