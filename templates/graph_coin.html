@@ -20,7 +20,8 @@
             // 데이터 배열
             const priceData = coinData.map(d => d.price);
             const volumeData = coinData.map(d => d.volume);
-            const labels = coinData.map(d => d.timestamp);
+            const labels = coinData.map(d => d.timestamp).filter((_, index) => index % 10 === 0);
+
 
             // 차트 생성
             const chart = new Chart(ctx, {
