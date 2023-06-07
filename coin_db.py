@@ -53,7 +53,7 @@ def get_timestamp():
 def send_kakao_message(message):
     url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
     headers = {
-        "Authorization": "Bearer " + "4TzYAEaFRjfHf-zp5pSaFm4p9UtBvu9FhBNOBPyqCinJXgAAAYiLsBTK"
+        "Authorization": "Bearer " + "R1t4yb4NT8m7uoXAxgvX6mTi7gXQS03dX7DFBNd3CiolTgAAAYiUel-S"
     }
     data = {
         "template_object": json.dumps({
