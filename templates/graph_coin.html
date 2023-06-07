@@ -20,7 +20,7 @@
             // 데이터 배열
             const priceData = coinData.map(d => d.price);
             const volumeData = coinData.map(d => d.volume);
-            const labels = coinData.map(d => d.timestamp).filter((_, index) => index % 10 === 0);
+            const labels = coinData.map(d => d.timestamp);
 
 
             // 차트 생성
@@ -45,21 +45,42 @@
                         }
                     ]
                 },
-                options: {
-                    scales: {
-                        y1: {
-                            type: 'linear',
-                            position: 'left',
-                            min: Math.min(...priceData) * 0.95, // Y 스케일을 priceData 최소값의 80%로 설정
-                            max: Math.max(...priceData) * 1.05, // Y 스케일을 priceData 최대값의 110%로 설정
+                options:
+                  scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Timestamp'
                         },
-                        y2: {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
+                        ticks: {
+                            callback: function (value, index, values) {
+                                // 시간 정보를 파싱하고 Date 객체를 생성한다.
+                                const timestamp = new Date(value);
+
+
+                                if (timestamp.getMinutes() === 0) {
+                                // 현재 레이블의 분이 0일 때만 레이블을 표시한다.
+                                    return value;
+                                }
+
+                                return null;
+                            }
                         }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'left',
+                        min: Math.min(...priceData) * 0.95,
+                        max: Math.max(...priceData) * 1.05,
+                    },
+                    y: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
                     }
                 }
+            }
             });
         });
     </script>
