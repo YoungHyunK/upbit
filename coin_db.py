@@ -169,6 +169,7 @@ while True:
                     current_price = get_current_price(ticker)
                     if current_price and target_price < current_price and ma15 < current_price:
                         current_time = now2.strftime("%Y-%m-%d %H:%M:%S")
+                        ticker.replace('-','_')
                         message = f"({current_time}) 변동성 돌파 전략 조건 충족! 종목 추천: {ticker} \nhttp://ec2-54-206-112-244.ap-southeast-2.compute.amazonaws.com:5000/graph/{ticker}"
                         status_code = send_kakao_message(message)
                         print(f"메시지 전송 결과: {status_code}")
