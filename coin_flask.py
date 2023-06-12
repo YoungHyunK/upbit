@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify
+from datetime import datetime, timedelta
 import sqlite3
 
 app = Flask(__name__)
@@ -6,24 +7,36 @@ app = Flask(__name__)
 def get_coin_names():
     conn = sqlite3.connect('coin_data.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT DISTINCT coin_name FROM coin_name')
-
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    
     coin_names = [row[0] for row in cursor.fetchall()]
     conn.close()
     return coin_names
+
+def filter_recent_data(coin_names, hours=1):
+    conn = sqlite3.connect('coin_data.db')
+    cursor = conn.cursor()
+
+    timestamp_threshold = datetime.now() - timedelta(hours=hours)
+    timestamp_threshold_str = timestamp_threshold.strftime("%Y-%m-%d %H:%M:%S")
+
+    recent_data_coin_names = []
+
+    for coin_name in coin_names:
+        cursor.execute(f"SELECT * FROM {coin_name} WHERE timestamp > ?", (timestamp_threshold_str,))
+        if cursor.fetchone():
+            recent_data_coin_names.append(coin_name)
+
+    conn.close()
+    return recent_data_coin_names
+
 
 @app.route('/')
 def index():
     message = "가상화폐추천 서비스입니다."
     coin_names = get_coin_names()
-    return render_template('index.html', message=message, coin_names=coin_names)
-
-
-@app.route('/')
-def index():
-    message = "가상화폐추천 서비스입니다."
-    return render_template('index.html', message=message)
-
+    recent_data_coin_names = filter_recent_data(coin_names)
+    return render_template('index.html', message=message, coin_names=recent_data_coin_names)
 @app.route('/data')
 def data():
     # SQLite3 데이터베이스 연결
@@ -56,6 +69,7 @@ def data():
 def graph_page():
     return render_template('graph.html')
 
+
 @app.route('/graph/<coin_name>')
 def graph_coin(coin_name):
     return render_template('graph_coin.html', coin_name=coin_name)
@@ -86,4 +100,4 @@ def get_data_json():
 
     
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
