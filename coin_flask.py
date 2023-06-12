@@ -3,6 +3,22 @@ import sqlite3
 
 app = Flask(__name__)
 
+def get_coin_names():
+    conn = sqlite3.connect('coin_data.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT DISTINCT coin_name FROM coin_name')
+
+    coin_names = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return coin_names
+
+@app.route('/')
+def index():
+    message = "가상화폐추천 서비스입니다."
+    coin_names = get_coin_names()
+    return render_template('index.html', message=message, coin_names=coin_names)
+
+
 @app.route('/')
 def index():
     message = "가상화폐추천 서비스입니다."
