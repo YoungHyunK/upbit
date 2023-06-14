@@ -13,7 +13,7 @@ def get_coin_names():
     conn.close()
     return coin_names
 
-def filter_recent_data(coin_names, hours=1):
+def filter_recent_data(coin_names, hours=0.25):
     conn = sqlite3.connect('coin_data.db')
     cursor = conn.cursor()
 
@@ -21,22 +21,29 @@ def filter_recent_data(coin_names, hours=1):
     timestamp_threshold_str = timestamp_threshold.strftime("%Y-%m-%d %H:%M:%S")
 
     recent_data_coin_names = []
+    strategy_meet_coin_names = []
 
-    for coin_name in coin_names:
+    for coin_name in coin_names:        
         cursor.execute(f"SELECT * FROM {coin_name} WHERE timestamp > ?", (timestamp_threshold_str,))
-        if cursor.fetchone():
+        row = cursor.fetchone()
+        if row:
             recent_data_coin_names.append(coin_name)
+            if row[-1]==1:  # meets_strategy 열이 True인 경우
+                strategy_meet_coin_names.append(coin_name)
 
     conn.close()
-    return recent_data_coin_names
+    return recent_data_coin_names, strategy_meet_coin_names
+
 
 
 @app.route('/')
 def index():
     message = "가상화폐추천 서비스입니다."
     coin_names = get_coin_names()
-    recent_data_coin_names = filter_recent_data(coin_names)
-    return render_template('index.html', message=message, coin_names=recent_data_coin_names)
+    recent_data_coin_names, strategy_meet_coin_names = filter_recent_data(coin_names)
+    return render_template('index.html', message=message, coin_names=recent_data_coin_names, strategy_meet_coin_names=strategy_meet_coin_names)
+
+
 @app.route('/data')
 def data():
     # SQLite3 데이터베이스 연결
